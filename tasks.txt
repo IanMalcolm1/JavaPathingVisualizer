@@ -1,0 +1,10 @@
+make window
+make pathing nodes
+	location on screen
+	neighboors
+	visited bool
+	distances to neighboors (calculated)
+draw nodes
+save nodes as array
+make file that keeps track of nodes in each pathing loop
+make way to go through file and display it
