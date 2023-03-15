@@ -19,7 +19,7 @@ public class PathingNode {
 	}
 	
 	
-	public void addneighbor(int neighbor) {
+	public void addNeighbor(int neighbor) {
 		for (int vecino : neighbors) {
 			if (vecino == neighbor) {
 				System.out.println("This neighboor already exists, dum-dum");
@@ -28,6 +28,12 @@ public class PathingNode {
 		}
 		
 		neighbors.add(neighbor);
+	}
+	
+	public void addNeighbors(int[] vecinos) {
+		for (int vecino : vecinos) {
+			addNeighbor(vecino);
+		}
 	}
 	
 	@Override

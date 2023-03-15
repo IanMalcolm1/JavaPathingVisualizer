@@ -1,10 +1,23 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class NodeManager {
 	private ArrayList<PathingNode> nodes;
 	
 	public NodeManager() {
-		nodes = new ArrayList<PathingNode>();
+		File nodesFile = new File("nodes.txt");
+		try {
+			Scanner nodesScanner = new Scanner(nodesFile);
+			nodes = parseNodeStringzuh(nodesScanner.nextLine());
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("My tears run red");
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -20,11 +33,47 @@ public class NodeManager {
 		return nodes.get(index);
 	}
 	
-	public void saveSnapshot() {
+	private String makeSnapshot() {
 		String snap = "";
 		
 		for (int i=0; i<nodes.size(); i++) {
 			snap += i + nodes.get(i).toString();
+		}
+		snap += "\n";
+		return snap;
+	}
+	
+	/*This one overwrites your nodes.txt file!!!*/
+	public void saveNodes() {
+		File buffer = new File("buffer.txt");
+		File nodes = new File("nodes.txt");
+		
+		String snap = makeSnapshot();
+		
+		try {
+			FileWriter writer = new FileWriter(buffer);
+			writer.write(snap);
+			writer.close();
+			buffer.renameTo(nodes);			
+		}
+		catch(IOException e) {
+			System.out.println("You're fucked");
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveSnapshot() {
+		String snap = makeSnapshot();
+		File history = new File("history.txt");
+		
+		try {
+			FileWriter writer = new FileWriter(history);
+			writer.write(snap);
+			writer.close();
+		}
+		catch(IOException e) {
+			System.out.println("You're fucked");
+			e.printStackTrace();
 		}
 		
 	}
@@ -41,7 +90,7 @@ public class NodeManager {
 	}
 	
 	
-	public PathingNode parseNodeString(String str) {
+	private PathingNode parseNodeString(String str) {
 		ArrayList<Integer> neighbors = new ArrayList<Integer>();
 		Double x, y;
 		boolean visited = false;
@@ -68,6 +117,18 @@ public class NodeManager {
 		}
 		
 		return new PathingNode(x,y,visited,neighbors);
+	}
+	
+	private ArrayList<PathingNode> parseNodeStringzuh(String str) {
+		ArrayList<PathingNode> nodezuh = new ArrayList<PathingNode>();
+		
+		String[] splitty = str.split(";");
+		
+		for (String nodeStr : splitty) {
+			nodezuh.add(parseNodeString(nodeStr));
+		}
+		
+		return nodezuh;
 	}
 	
 	public double calcDistance(PathingNode node1, PathingNode node2) {
