@@ -1,7 +1,8 @@
+package LookAway;
 public class Coords {
-	public double x, y;
+	public int x, y;
 	
-	Coords(double x, double y) {
+	Coords(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -12,6 +13,6 @@ public class Coords {
 	
 	@Override
 	public String toString() {
-		return x+","+y+":";
+		return x+","+y;
 	}
 }

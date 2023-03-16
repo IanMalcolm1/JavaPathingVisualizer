@@ -1,21 +1,34 @@
+package LookAway;
 import java.util.ArrayList;
 
 
 public class PathingNode {
-	private ArrayList<Integer> neighbors;
+	public int id;
 	public Coords location;
+	private ArrayList<Integer> neighbors;
+	public int cameFrom;
 	public boolean visited;
 	
 	public PathingNode(int x, int y) {
 		neighbors = new ArrayList<Integer>();
 		location = new Coords(x,y);
 		visited = false;
+		cameFrom = -1;
+		id = -1;
 	}
 	
-	public PathingNode(double x, double y, boolean visited, ArrayList<Integer> neighborIds) {
+	public PathingNode(int x, int y, ArrayList<Integer> neighborIds) {
+		neighbors = neighborIds;
+		location = new Coords(x,y);
+		visited = false;
+		cameFrom = -1;
+	}
+	
+	public PathingNode(int x, int y, ArrayList<Integer> neighborIds, int cameFrom, boolean visited) {
 		neighbors = neighborIds;
 		location = new Coords(x,y);
 		this.visited = visited;
+		this.cameFrom = cameFrom;
 	}
 	
 	
@@ -36,6 +49,10 @@ public class PathingNode {
 		}
 	}
 	
+	public ArrayList<Integer> getNeighbors() {
+		return neighbors;
+	}
+	
 	@Override
 	public String toString() {
 		String str = "";
@@ -44,10 +61,12 @@ public class PathingNode {
 		else
 			str += "0";
 		
-		str += " "+location.toString()+" ";
+		str += ":"+location.toString()+":";
 		for (int neighbor : neighbors) {
 			str += neighbor+",";
 		}
+		
+		str += ":"+cameFrom;
 		
 		str += ";";
 		
