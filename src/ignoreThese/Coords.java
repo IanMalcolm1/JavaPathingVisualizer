@@ -1,4 +1,4 @@
-package LookAway;
+package ignoreThese;
 public class Coords {
 	public int x, y;
 	

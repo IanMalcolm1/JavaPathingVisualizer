@@ -1,16 +1,19 @@
-package LookAway;
+package ignoreThese;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 public class NodeGraphics extends Component {
 	ArrayList<PathingNode> currentNodes;
+	int circleRadius = 25;
 	
 	public NodeGraphics() {
 		currentNodes = null;
@@ -18,6 +21,7 @@ public class NodeGraphics extends Component {
 	
 	public NodeGraphics(ArrayList<PathingNode> nodes) {
 		currentNodes = nodes;
+		System.out.println();
 	}
 	
 	public void setNodes(int lineNumber) {
@@ -36,7 +40,10 @@ public class NodeGraphics extends Component {
 			
 			drawLines(renderer, node, i);
 			
-			if (node.visited) {
+			if (node.cameFrom == -2) {
+				renderer.setColor(Color.blue);
+			}
+			else if (node.visited) {
 				renderer.setColor(new Color(24, 226, 0));
 			}
 			else {
@@ -44,7 +51,9 @@ public class NodeGraphics extends Component {
 			}
 			
 			Coords loc = convertCoords(node.location);
-			renderer.fillOval(loc.x-25, loc.y-25, 50, 50);
+			renderer.fillOval(loc.x-circleRadius, loc.y-circleRadius, circleRadius*2, circleRadius*2);
+			
+			drawCameFromArrow(renderer, node);
 		}
 	}
 	
@@ -71,8 +80,37 @@ public class NodeGraphics extends Component {
 		}
 	}
 	
+	private void drawCameFromArrow(Graphics2D renderer, PathingNode node) {
+		if (node.cameFrom < 0) {
+			return;
+		}
+		
+		Coords start = convertCoords(node.location);
+		Coords dest = convertCoords(currentNodes.get(node.cameFrom).location);
+		
+		double angle = Math.atan2(dest.x-start.x, dest.y-start.y);
+		
+		Coords tip = new Coords((int)(dest.x - Math.sin(angle)*circleRadius), (int)(dest.y - Math.cos(angle)*circleRadius));
+		
+		double angle2 = angle + Math.PI/8;
+		Coords side1 = new Coords((int)(tip.x-Math.sin(angle2)*circleRadius), (int)(tip.y-Math.cos(angle2)*circleRadius));
+		
+		double angle3 = angle - Math.PI/8;
+		Coords side2 = new Coords((int)(tip.x-Math.sin(angle3)*circleRadius), (int)(tip.y-Math.cos(angle3)*circleRadius));
+		
+		
+		
+		Polygon arrow = new Polygon();
+		arrow.addPoint(tip.x, tip.y);
+		arrow.addPoint(side1.x, side1.y);
+		arrow.addPoint(side2.x, side2.y);
+
+		renderer.setColor(Color.orange);
+		renderer.fillPolygon(arrow);
+	}
+	
 	private Coords convertCoords(Coords coords) {
-		int scale = 20;
+		int scale = 30;
 		Dimension size = getSize();
 		return new Coords(coords.x*scale + size.width/2, size.height/2 - coords.y*scale);
 	}

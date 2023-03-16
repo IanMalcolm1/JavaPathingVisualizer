@@ -1,31 +1,38 @@
 package main;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JFrame;
-import LookAway.NodeGraphics;
-import LookAway.NodeManager;
-import LookAway.PathingNode;
+
+import ignoreThese.NodeGraphics;
+import ignoreThese.NodeManager;
+import ignoreThese.PathingNode;
 
 
 public class PathingVisualizer {
-	public static void main(String[] args) {
-		PathingVisualizer visualizer = new PathingVisualizer();
-	}
-	
-	
 	private JFrame window;
 	private NodeGraphics graphics;
 	private NodeManager nodeMan;
 	
-	public PathingVisualizer() {
-		nodeMan = new NodeManager("test.txt");
-		graphics = new NodeGraphics(nodeMan.getNodes());
+	
+	public static void main(String[] args) {
+		PathingVisualizer visualizer = new PathingVisualizer();
+		visualizer.init();
+		visualizer.run();
+	}
+	
+	
+	
+	public void init() {
+		nodeMan = new NodeManager();
+		nodeMan.createSimpleGraph("test.txt");
 		
+		graphics = new NodeGraphics(nodeMan.getNodes());
 		
 		window = new JFrame("Pathfinding Visualizer");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
-		
+	}
+	
+	public void run() {
 		window.add(graphics);
 		
 		breadthFirstSearch();
@@ -35,8 +42,12 @@ public class PathingVisualizer {
 		boolean doPause = true;
 		
 		LinkedList<PathingNode> frontier = new LinkedList<PathingNode>();
-		nodeMan.getNode(7).visited = true;
-		frontier.add(nodeMan.getNode(7));
+		
+		int goalNode = 7;
+		
+		nodeMan.setStartNode(goalNode);
+		nodeMan.getNode(goalNode).visited = true;
+		frontier.add(nodeMan.getNode(goalNode));
 		
 		while (!frontier.isEmpty()) {
 			if (doPause) {
@@ -51,8 +62,8 @@ public class PathingVisualizer {
 			
 			PathingNode curr = frontier.remove();
 			
-			for (int nId : curr.getNeighbors()) {
-				PathingNode neighbor = nodeMan.getNode(nId);
+			for (int neighborId : curr.getNeighbors()) {
+				PathingNode neighbor = nodeMan.getNode(neighborId);
 				if (neighbor.visited) {
 					continue;
 				}

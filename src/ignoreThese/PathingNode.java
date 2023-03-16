@@ -1,4 +1,4 @@
-package LookAway;
+package ignoreThese;
 import java.util.ArrayList;
 
 
@@ -6,14 +6,13 @@ public class PathingNode {
 	public int id;
 	public Coords location;
 	private ArrayList<Integer> neighbors;
-	public int cameFrom;
+	public int cameFrom = -1;
 	public boolean visited;
 	
 	public PathingNode(int x, int y) {
 		neighbors = new ArrayList<Integer>();
 		location = new Coords(x,y);
 		visited = false;
-		cameFrom = -1;
 		id = -1;
 	}
 	
@@ -21,7 +20,7 @@ public class PathingNode {
 		neighbors = neighborIds;
 		location = new Coords(x,y);
 		visited = false;
-		cameFrom = -1;
+		id = -1;
 	}
 	
 	public PathingNode(int x, int y, ArrayList<Integer> neighborIds, int cameFrom, boolean visited) {
@@ -29,6 +28,7 @@ public class PathingNode {
 		location = new Coords(x,y);
 		this.visited = visited;
 		this.cameFrom = cameFrom;
+		id = -1;
 	}
 	
 	

@@ -1,4 +1,4 @@
-package LookAway;
+package ignoreThese;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -50,6 +50,10 @@ public class NodeManager {
 	
 	public ArrayList<PathingNode> getNodes() {
 		return nodes;
+	}
+	
+	public void setStartNode(int id) {
+		nodes.get(id).cameFrom = -2;
 	}
 	
 	private String makeSnapshot() {
