@@ -36,14 +36,6 @@ public class NodeManager {
 	}
 	
 	
-	public PathingNode getNode(Coords location) {
-		for (PathingNode node : nodes) {
-			if (node.location.equals(location)) {
-				return node;
-			}
-		}
-		return null;
-	}
 	public PathingNode getNode(int index) {
 		return nodes.get(index);
 	}
@@ -52,8 +44,12 @@ public class NodeManager {
 		return nodes;
 	}
 	
-	public void setStartNode(int id) {
+	public void labelStartNode(int id) {
 		nodes.get(id).cameFrom = -2;
+	}
+	
+	public void labelEndNode(int id) {
+		nodes.get(id).cameFrom = -3;
 	}
 	
 	private String makeSnapshot() {
@@ -81,14 +77,13 @@ public class NodeManager {
 			writer.close();	
 		}
 		catch(IOException e) {
-			System.out.println("You're fucked");
 			e.printStackTrace();
 		}
 	}
 	
 	public void saveSnapshot(String filename) {
 		String snap = makeSnapshot();
-		File history = new File("history.txt");
+		File history = new File(filename);
 		
 		try {
 			FileWriter writer = new FileWriter(history);
@@ -96,7 +91,6 @@ public class NodeManager {
 			writer.close();
 		}
 		catch(IOException e) {
-			System.out.println("You're fucked");
 			e.printStackTrace();
 		}
 		
@@ -105,7 +99,7 @@ public class NodeManager {
 	public void addNode(PathingNode node) {
 		for (PathingNode existingNode : nodes) {
 			if (existingNode.location.equals(node.location)) {
-				System.out.println("This node already exists, dum-dum");
+				System.out.println("A node at ("+node.location.toString()+") already exists");
 				return;
 			}
 		}
@@ -166,10 +160,12 @@ public class NodeManager {
 	}
 	
 	
+	
+	
 	/*
 	 * Pass null if you don't want to save this configuration.
 	 */
-	public void createSimpleGraph(String filename) {
+	public void createSimpleGraph() {
 		nodes.clear();
 		
 		PathingNode node = new PathingNode(0,0);
@@ -214,9 +210,98 @@ public class NodeManager {
 		
 		node = new PathingNode(13,-13);
 		addNode(node);
+	}
+	
+	
+	public void createZigZagGrid() {
+		int x = -9;
+		int xIncrement = 3;
+		int y = 9;
 		
-		if (filename != null) {
-			saveNodes(filename);
+		PathingNode node = new PathingNode(x,y);
+		node.addNeighbor(1);
+		addNode(node);
+		
+		x += xIncrement;
+		
+		for (int i=1; i<48; i++) {
+			if (i%7==0) {
+				xIncrement = -xIncrement;
+				x += xIncrement;
+				y -= 3;
+			}
+			
+			node = new PathingNode(x,y);
+			node.addNeighbor(i-1);
+			node.addNeighbor(i+1);
+			addNode(node);
+			
+			x += xIncrement;
+		}
+		
+		node = new PathingNode(x,y);
+		node.addNeighbor(47);
+		addNode(node);
+	}
+	
+	
+	public void createSquareGrid() {
+		nodes.clear();
+		
+		for (int y = 0; y < 9; y++) {
+			for (int x = 0; x < 9; x++) {
+				PathingNode node = new PathingNode((x-4)*3, (y-4)*(-3));
+				
+				int id = y*9 + x;
+				
+				if (x>0)
+					node.addNeighbor(id-1);
+				if (x<8)
+					node.addNeighbor(id+1);
+				if (y>0)
+					node.addNeighbor(id-9);
+				if (y<8)
+					node.addNeighbor(id+9);
+				
+				addNode(node);
+			}
+		}
+	}
+	
+	
+	public void createDiagonalGrid() {
+		nodes.clear();
+		
+		for (int y = 0; y < 7; y++) {
+			for (int x = 0; x < 7; x++) {
+				PathingNode node = new PathingNode((x-3)*4, (y-3)*(-4));
+				
+				int id = y*7 + x;
+				
+				if (x>0) {
+					node.addNeighbor(id-1);
+
+					if (y>0)
+						node.addNeighbor(id-1-7);
+					if (y<6)
+						node.addNeighbor(id-1+7);
+				}
+				if (x<6) {
+					node.addNeighbor(id+1);
+					
+					if (y>0)
+						node.addNeighbor(id+1-7);
+					if (y<6)
+						node.addNeighbor(id+1+7);
+				}
+				
+				if (y>0)
+					node.addNeighbor(id-7);
+				if (y<6)
+					node.addNeighbor(id+7);
+				
+				addNode(node);
+			}
 		}
 	}
 }

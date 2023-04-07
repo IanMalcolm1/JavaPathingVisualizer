@@ -1,31 +1,20 @@
 package ignoreThese;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import javax.swing.JPanel;
 
-import javax.swing.JFrame;
-
-public class NodeGraphics extends Component {
+public class NodeGraphics extends JPanel {
 	ArrayList<PathingNode> currentNodes;
 	int circleRadius = 25;
-	
-	public NodeGraphics() {
-		currentNodes = null;
-	}
 	
 	public NodeGraphics(ArrayList<PathingNode> nodes) {
 		currentNodes = nodes;
 		System.out.println();
-	}
-	
-	public void setNodes(int lineNumber) {
-		//TODO: load node list from history file
 	}
 	
 	public void setNodes(ArrayList<PathingNode> nodes) {
@@ -42,6 +31,9 @@ public class NodeGraphics extends Component {
 			
 			if (node.cameFrom == -2) {
 				renderer.setColor(Color.blue);
+			}
+			else if (node.cameFrom == -3) {
+				renderer.setColor(Color.red);
 			}
 			else if (node.visited) {
 				renderer.setColor(new Color(24, 226, 0));
